@@ -24,3 +24,10 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Force input text to always be dark regardless of system colour scheme */
+input, textarea {
+  color: #171717 !important;
+  background-color: #ffffff !important;
+}
+
