@@ -13,6 +13,7 @@ export default function ChatPage() {
   const bottomRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const supabase = createClient()
+  const [planGenerated, setPlanGenerated] = useState(false)
 
   // Auto scroll to the latest message every time messages update
   useEffect(() => {
@@ -59,6 +60,16 @@ export default function ChatPage() {
             }))
           )
         }
+        // Check if user already has a saved plan to show the view plan button
+        const { data: existingPlan } = await supabase
+          .from('wellness_plans')
+          .select('id')
+          .eq('user_id', user.id)
+          .limit(1)
+
+        if (existingPlan && existingPlan.length > 0) {
+          setPlanGenerated(true)
+        }
       } else {
         console.log('No existing conversation — creating new one')
 
@@ -76,6 +87,7 @@ export default function ChatPage() {
         }
       }
     }
+    
 
     initConversation()
   }, [])
@@ -114,6 +126,12 @@ export default function ChatPage() {
     setMessages((prev) => [...prev, assistantMessage])
     setLoading(false)
 
+    // If a plan was generated automatically, thsis is to show the view plan button
+    if (data.planGenerated) {
+      setPlanGenerated(true)
+      console.log('Plan generated automatically by the AI')
+    }
+
     // Save the AI response to Supabase
     await supabase.from('messages').insert({
       conversation_id: conversationId,
@@ -125,14 +143,24 @@ export default function ChatPage() {
   return (
     <main className="min-h-screen bg-gray-50 flex flex-col">
 
-      <nav className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+      <nav className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
         <h1 className="text-lg font-semibold text-gray-900">Wellbeing Assistant</h1>
-        <button
-          onClick={handleLogout}
-          className="text-sm text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg px-4 py-2"
-        >
-          Sign out
-        </button>
+        <div className="flex gap-3">
+          {planGenerated && (
+            <button
+              onClick={() => router.push('/plan')}
+              className="text-sm bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700"
+            >
+              View my plan
+            </button>
+          )}
+          <button
+            onClick={handleLogout}
+            className="text-sm text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg px-4 py-2"
+          >
+            Sign out
+          </button>
+        </div>
       </nav>
 
       <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 max-w-3xl mx-auto w-full">
