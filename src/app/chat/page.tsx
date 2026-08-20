@@ -31,6 +31,31 @@ export default function ChatPage() {
         return
       }
 
+      // Check if user has checked in today
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      const { data: previousCheckins } = await supabase
+        .from('check_ins')
+        .select('id')
+        .eq('user_id', user.id)
+        .limit(1)
+      
+
+      const { data: todayCheckin } = await supabase
+        .from('check_ins')
+        .select('id')
+        .eq('user_id', user.id)
+        .gte('created_at', today.toISOString())
+        .limit(1)
+
+      
+      // Only redirect if user has checked in before but not yet today
+      if (previousCheckins && previousCheckins.length > 0 && (!todayCheckin || todayCheckin.length === 0)) {
+        router.push('/checkin')
+        return
+      }
+
       const { data: existingConversations, error } = await supabase
         .from('conversations')
         .select('*')
@@ -98,6 +123,24 @@ export default function ChatPage() {
     router.push('/auth/login')
   }
 
+  const handleNewConversation = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+  
+    // Create a fresh conversation in Supabase
+    const { data: newConversation } = await supabase
+      .from('conversations')
+      .insert({ user_id: user.id, category: 'Others' })
+      .select()
+      .single()
+  
+    if (newConversation) {
+      setConversationId(newConversation.id)
+      setMessages([])
+      setPlanGenerated(false)
+    }
+  }
+
   const handleSend = async () => {
     if (!input.trim() || !conversationId) return
 
@@ -144,23 +187,41 @@ export default function ChatPage() {
     <main className="min-h-screen bg-gray-50 flex flex-col">
 
       <nav className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-        <h1 className="text-lg font-semibold text-gray-900">Wellbeing Assistant</h1>
-        <div className="flex gap-3">
+        <div className="flex items-center gap-6">
+          <h1 className="text-lg font-semibold text-gray-900">Wellbeing Assistant</h1>
+          <button
+            onClick={handleNewConversation}
+            className="text-sm text-gray-500 hover:text-gray-900"
+          >
+            New chat
+          </button>
+          <button
+            onClick={() => router.push('/checkin')}
+            className="text-sm text-gray-500 hover:text-gray-900"
+          >
+            Check-in
+          </button>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="text-sm text-gray-500 hover:text-gray-900"
+          >
+            Dashboard
+          </button>
           {planGenerated && (
             <button
               onClick={() => router.push('/plan')}
-              className="text-sm bg-green-600 text-white rounded-lg px-4 py-2 hover:bg-green-700"
+              className="text-sm text-green-600 hover:text-green-700 font-medium"
             >
-              View my plan
+              View plan
             </button>
           )}
-          <button
-            onClick={handleLogout}
-            className="text-sm text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg px-4 py-2"
-          >
-            Sign out
-          </button>
         </div>
+        <button
+          onClick={handleLogout}
+          className="text-sm text-gray-500 hover:text-gray-900 border border-gray-200 rounded-lg px-4 py-2"
+        >
+          Sign out
+        </button>
       </nav>
 
       <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4 max-w-3xl mx-auto w-full">
