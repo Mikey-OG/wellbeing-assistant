@@ -31,14 +31,6 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Wellbeing categories*/}
-        <div className="grid grid-cols-3 gap-4">
-          {['Sleep', 'Stress', 'Mood', 'Physical Wellbeing', 'Motivation', 'Others'].map((category) => (
-            <div key={category} className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-              <p className="font-semibold text-gray-700 text-lg">{category}</p>
-            </div>
-          ))}
-        </div>
 
       </div>
     </main>
