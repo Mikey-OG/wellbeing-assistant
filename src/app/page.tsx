@@ -11,7 +11,7 @@ export default function Home() {
           Wellbeing Assistant
         </h1>
         <p className="text-xl text-gray-600 mb-10 leading-relaxed">
-          Your personal AI companion for sleep, stress, mood, and motivation.
+          Your personal AI companion for sleep, stress, mood, and much more.
           Get a personalised plan and track your progress every day.
         </p>
 

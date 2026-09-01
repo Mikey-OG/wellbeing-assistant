@@ -16,7 +16,7 @@ Users chat with an AI assistant about their wellbeing concerns. The system figur
 - Supabase which handles the database and authentication.
 - Railway (deployment)
 
-The application is accessible at www
+The application is accessible at https://wellbeing-assistant-production.up.railway.app/
 
 Or Clone the repo and install dependencies:
 
