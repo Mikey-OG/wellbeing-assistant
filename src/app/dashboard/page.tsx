@@ -39,7 +39,7 @@ export default function DashboardPage() {
         return
       }
 
-      // Load last 7 check ins
+      // Loading the last 7 check ins
       const { data: checkInData } = await supabase
         .from('check_ins')
         .select('*')
@@ -52,7 +52,7 @@ export default function DashboardPage() {
         setStreak(calculateStreak(checkInData))
       }
 
-      // Load most recent wellness plan
+      // Loading most recent wellness plan
       const { data: planData } = await supabase
         .from('wellness_plans')
         .select('*')
@@ -124,7 +124,7 @@ export default function DashboardPage() {
 
       <div className="max-w-3xl mx-auto px-6 py-8 space-y-6">
 
-        {/* Metrics row */}
+        {/* This is the metrics row */}
         <div className="grid grid-cols-3 gap-4">
           <div className="bg-white border border-gray-200 rounded-xl p-5">
             <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Check-in streak</p>
@@ -142,7 +142,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Mood chart */}
+        {/* The mood chart */}
         <div className="bg-white border border-gray-200 rounded-xl p-5">
           <h2 className="text-sm font-medium text-gray-900 mb-4">Mood over the past week</h2>
           {checkIns.length === 0 ? (
@@ -208,7 +208,7 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Quick actions */}
+        {/* Quick actions like being able to go straight to dashboard or back to chat after checkin*/}
         <div className="flex gap-3">
           <button
             onClick={() => router.push('/checkin')}

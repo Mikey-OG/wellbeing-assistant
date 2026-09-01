@@ -1,12 +1,12 @@
 import Link from 'next/link'
 
-// Landing page 
+// This is the Landing page 
 export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-6">
       <div className="text-center max-w-2xl w-full">
 
-        {/* App title and tagline */}
+        {/* The title */}
         <h1 className="text-6xl font-bold text-gray-900 mb-6">
           Wellbeing Assistant
         </h1>
@@ -31,7 +31,7 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Wellbeing categories the app supports */}
+        {/* Wellbeing categories*/}
         <div className="grid grid-cols-3 gap-4">
           {['Sleep', 'Stress', 'Mood', 'Physical Wellbeing', 'Motivation', 'Others'].map((category) => (
             <div key={category} className="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow">
@@ -44,17 +44,3 @@ export default function Home() {
     </main>
   )
 }
-// export default function Home() {
-//   return (
-//     <main className="min-h-screen bg-gray-50 flex items-center justify-center">
-//       <div className="text-center">
-//         <h1 className="text-4xl font-bold text-gray-900 mb-4">
-//           Wellbeing Assistant
-//         </h1>
-//         <p className="text-gray-600 text-lg">
-//           Your personal AI wellbeing companion
-//         </p>
-//       </div>
-//     </main>
-//   )
-// }

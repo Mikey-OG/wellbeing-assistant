@@ -1,6 +1,6 @@
 import { ChatAnthropic } from '@langchain/anthropic'
 
-// The 6 wellbeing categories our app supports
+// The 6 wellbeing categories included
 export type WellbeingCategory = 
   | 'Sleep'
   | 'Stress'
@@ -9,8 +9,7 @@ export type WellbeingCategory =
   | 'Motivation'
   | 'Others'
 
-// Each category has its own specialist system prompt
-// This is what makes the AI behave like a specialist rather than a generic chatbot
+// Each category has its own specialist system prompt. Did this is to make the AI act like a specialist.
 export const categoryPrompts: Record<WellbeingCategory, string> = {
   Sleep: `You are a sleep specialist and wellbeing coach. 
 You have deep expertise in sleep hygiene, circadian rhythms, insomnia, and sleep disorders.
@@ -55,7 +54,7 @@ Always be empathetic, non-judgmental, and constructive.
 Keep responses concise and conversational.`,
 }
 
-// This function reads the user's message and decides which category it belongs to
+// Here it reads the user's message and decides which category it belongs to
 export async function classifyMessage(message: string): Promise<WellbeingCategory> {
   const model = new ChatAnthropic({
     model: 'claude-haiku-4-5-20251001',
@@ -79,7 +78,7 @@ Respond with ONLY the category name, nothing else. No explanation, no punctuatio
   const response = await model.invoke([{ role: 'user', content: prompt }])
   const category = (response.content as string).trim()
 
-  // Make sure the response is one of our valid categories
+  // To make sure the response is part of the valid categories
   const validCategories: WellbeingCategory[] = [
     'Sleep', 'Stress', 'Mood', 'Physical Wellbeing', 'Motivation', 'Others'
   ]
@@ -95,6 +94,6 @@ Respond with ONLY the category name, nothing else. No explanation, no punctuatio
 
   console.log(`User message: "${message}"`)
   console.log(`Classified as: Others (default)`)
-  // If the classifier returns something unexpected, default to Others
+  // If the classifier returns something unexpected, it will default to Others
   return 'Others'
 }

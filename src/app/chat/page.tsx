@@ -15,12 +15,12 @@ export default function ChatPage() {
   const supabase = createClient()
   const [planGenerated, setPlanGenerated] = useState(false)
 
-  // Auto scroll to the latest message every time messages update
+  // This is for page to scroll to the latest message every time messages update
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  // On page load, check for existing conversation or create a new one
+  // checks for existing conversation or creates a new one
   useEffect(() => {
     const initConversation = async () => {
       const { data: { user } } = await supabase.auth.getUser()
@@ -31,7 +31,7 @@ export default function ChatPage() {
         return
       }
 
-      // Check if user has checked in today
+      // Check if user has checked in today. Added this to theuser doesnt keep getting a checkin prompt multiple times and unnecessary
       const today = new Date()
       today.setHours(0, 0, 0, 0)
 
@@ -149,14 +149,14 @@ export default function ChatPage() {
     setInput('')
     setLoading(true)
 
-    // Save user message to Supabase straight away
+    // This saves user message to the database
     await supabase.from('messages').insert({
       conversation_id: conversationId,
       role: 'user',
       content: input,
     })
-
-    // Send the conversation to the AI
+ 
+    // Sends the conversation to the AI model
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -175,7 +175,7 @@ export default function ChatPage() {
       console.log('Plan generated automatically by the AI')
     }
 
-    // Save the AI response to Supabase
+    // This saves the AI response to the database
     await supabase.from('messages').insert({
       conversation_id: conversationId,
       role: 'assistant',
@@ -259,7 +259,7 @@ export default function ChatPage() {
           </div>
         )}
 
-        {/* Scroll anchor — keeps the view at the latest message */}
+        {/* Scroll that keeps the view at the latest message */}
         <div ref={bottomRef} />
       </div>
 

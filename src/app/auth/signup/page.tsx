@@ -16,7 +16,7 @@ export default function SignupPage() {
   const supabase = createClient()
 
   const handleSignup = async () => {
-    // Basic validation before hitting the API
+    // Doing this to have a basic validation before hitting the API
     if (!fullName.trim() || !email.trim() || !password.trim()) {
       setError('Please fill in all fields.')
       return
@@ -45,8 +45,7 @@ export default function SignupPage() {
     }
 
     if (data.user) {
-      // Profile is created automatically by the database trigger
-      // No need to manually insert here
+      // The user profile will created automatically by the database trigger
       router.push('/chat')
     }
   }

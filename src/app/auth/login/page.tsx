@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 export default function LoginPage() {
-  // These store what the user types into the form fields
+  // These store what the user types into the form.
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -19,7 +19,7 @@ export default function LoginPage() {
     setLoading(true)
     setError('')
 
-    // Send the email and password to Supabase to check if they match an account
+    // Sends the email and password to Supabase to check if they match an account
     const { error } = await supabase.auth.signInWithPassword({ email, password })
 
     if (error) {
@@ -27,7 +27,6 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      // Login was successful, send the user to the chat page
       router.push('/chat')
     }
   }
@@ -38,7 +37,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome back</h1>
         <p className="text-gray-500 mb-6">Sign in to your wellbeing assistant</p>
 
-        {/* Show an error message if login fails */}
+        {/* Shows an error message if login fails */}
         {error && (
           <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">
             {error}

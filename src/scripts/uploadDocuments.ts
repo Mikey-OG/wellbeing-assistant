@@ -5,14 +5,14 @@ import * as path from 'path'
 import * as dotenv from 'dotenv'
 import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs'
 
-// Load environment variables from .env.local
+
 dotenv.config({ path: '.env.local' })
 
 const pinecone = new Pinecone({
   apiKey: process.env.PINECONE_API_KEY!,
 })
 
-// Cohere client for generating embeddings — free tier
+// Cohere client so it can generate embeddings
 const cohere = new CohereClient({
   token: process.env.COHERE_API_KEY!,
 })
@@ -42,7 +42,7 @@ function chunkText(text: string, chunkSize: number = 500): string[] {
 async function uploadPDF(filePath: string, category: string) {
   console.log(`Processing: ${filePath}`)
 
-  // Read and parse the PDF
+  // This is to reading and parsing the PDF
   const fileBuffer = fs.readFileSync(filePath)
   const uint8Array = new Uint8Array(fileBuffer)
   const pdfDoc = await getDocument({ data: uint8Array }).promise
@@ -57,7 +57,7 @@ async function uploadPDF(filePath: string, category: string) {
     text += pageText + ' '
   }
 
-  // Split into chunks
+  // This to split into chunks
   const chunks = chunkText(text)
   console.log(`Found ${chunks.length} chunks in ${category}`)
 
@@ -67,7 +67,7 @@ async function uploadPDF(filePath: string, category: string) {
     const chunk = chunks[i]
     if (chunk.length < 50) continue
 
-    // Generate embedding using Cohere
+    
     const response = await cohere.embed({
       texts: [chunk],
       model: 'embed-english-v3.0',
@@ -91,7 +91,7 @@ async function uploadPDF(filePath: string, category: string) {
 
     console.log(`Uploaded chunk ${i + 1}/${chunks.length} for ${category}`)
 
-    // Small delay to avoid hitting rate limits
+    // Added a small delay to avoid hitting rate limits
     await new Promise(resolve => setTimeout(resolve, 200))
   }
 }
@@ -113,131 +113,3 @@ async function main() {
 }
 
 main().catch(console.error)
-
-
-
-
-
-
-
-
-
-
-// import { Pinecone } from '@pinecone-database/pinecone'
-// import { OpenAI } from 'openai'
-// import * as fs from 'fs'
-// import * as path from 'path'
-// import * as dotenv from 'dotenv'
-// import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs'
-
-
-
-// // Load environment variables from .env.local
-// dotenv.config({ path: '.env.local' })
-
-// const pinecone = new Pinecone({
-//   apiKey: process.env.PINECONE_API_KEY!,
-// })
-
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY!,
-//   organization: process.env.OPENAI_ORG_ID!,
-// })
-
-// // Split text into smaller chunks so Pinecone can search them accurately
-// function chunkText(text: string, chunkSize: number = 500): string[] {
-//   const sentences = text.split(/(?<=[.!?])\s+/)
-//   const chunks: string[] = []
-//   let currentChunk = ''
-
-//   for (const sentence of sentences) {
-//     if ((currentChunk + sentence).length > chunkSize && currentChunk.length > 0) {
-//       chunks.push(currentChunk.trim())
-//       currentChunk = sentence
-//     } else {
-//       currentChunk += ' ' + sentence
-//     }
-//   }
-
-//   if (currentChunk.trim().length > 0) {
-//     chunks.push(currentChunk.trim())
-//   }
-
-//   return chunks
-// }
-
-// async function uploadPDF(filePath: string, category: string) {
-//   console.log(`Processing: ${filePath}`)
-
-//  const fileBuffer = fs.readFileSync(filePath)
-// const uint8Array = new Uint8Array(fileBuffer)
-// const pdfDoc = await getDocument({ data: uint8Array }).promise
-// let text = ''
-
-// for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
-//   const page = await pdfDoc.getPage(pageNum)
-//   const content = await page.getTextContent()
-//   const pageText = content.items
-//   .map((item: any) => ('str' in item ? item.str : ''))
-//   .join(' ')
-
-//   text += pageText + ' '
-// }
-
-//   // Split the text into smaller chunks
-//   const chunks = chunkText(text)
-//   console.log(`Found ${chunks.length} chunks in ${category}`)
-
-//   const index = pinecone.index(process.env.PINECONE_INDEX_NAME!)
-
-//   // Upload each chunk to Pinecone
-//   for (let i = 0; i < chunks.length; i++) {
-//     const chunk = chunks[i]
-
-//     if (chunk.length < 50) continue
-
-//     // Convert chunk to vector embedding
-//     const embedding = await openai.embeddings.create({
-//       model: 'text-embedding-ada-002',
-//       input: chunk,
-//     })
-
-//     const vector = embedding.data[0].embedding
-
-//     // Upload to Pinecone with metadata
-//     await index.upsert([
-//       {
-//         id: `${category.toLowerCase()}-${i}`,
-//         values: vector,
-//         metadata: {
-//           category,
-//           text: chunk,
-//           source: path.basename(filePath),
-//         },
-//       },
-//     ])
-
-//     console.log(`Uploaded chunk ${i + 1}/${chunks.length} for ${category}`)
-//     // Wait 1 second between chunks to avoid rate limiting
-//     await new Promise(resolve => setTimeout(resolve, 10000))
-//   }
-// }
-
-// async function main() {
-//   console.log('Starting document upload to Pinecone...')
-
-//   // Upload both PDF documents
-//   await uploadPDF(
-//     path.join(process.cwd(), 'src/documents/wellbeing-guide.pdf'),
-//     'General Wellbeing'
-//   )
-
-//   await uploadPDF(
-//     path.join(process.cwd(), 'src/documents/motivation-guide.pdf'),
-//     'Motivation'
-//   )
-
-//   console.log('All documents uploaded successfully.')
-// }
-
-// main().catch(console.error)

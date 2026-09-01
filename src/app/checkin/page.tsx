@@ -31,7 +31,7 @@ export default function CheckinPage() {
       return
     }
 
-    // Save the check in to Supabase
+    // Saving the check-in data to Supabase
     await supabase.from('check_ins').insert({
       user_id: user.id,
       mood: selectedMood,
@@ -91,7 +91,7 @@ export default function CheckinPage() {
           })}
         </p>
 
-        {/* Mood selection buttons */}
+        {/* Button to select moods*/}
         <div className="grid grid-cols-4 gap-3 mb-8">
           {moodOptions.map((mood) => (
             <button
@@ -111,7 +111,7 @@ export default function CheckinPage() {
           ))}
         </div>
 
-        {/* Optional notes field */}
+
         <div className="mb-8">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Anything you want to note? (optional)

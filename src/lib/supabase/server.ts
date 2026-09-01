@@ -19,9 +19,7 @@ export async function createClient() {
               cookieStore.set(name, value, options)
             )
           } catch {
-            /* Server components can't set cookies directly because they're read-only
-             by the time they render. Our middleware.ts file handles cookie refreshing
-             instead — it runs before every page load and keeps the session alive*/
+            
           }
         },
       },

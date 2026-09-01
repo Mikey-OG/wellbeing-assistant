@@ -39,7 +39,7 @@ export default function PlanPage() {
         return
       }
 
-      // Fetch the most recent wellness plan for this user
+      // Get the most recent wellness plan for this user
       const { data } = await supabase
         .from('wellness_plans')
         .select('*')
@@ -107,7 +107,7 @@ export default function PlanPage() {
           </p>
         </div>
 
-        {/* Progress bar */}
+        {/* This is the progress bar */}
         <div className="mb-8">
           <div className="flex justify-between text-xs text-gray-400 mb-2">
             <span>Progress</span>
@@ -118,7 +118,7 @@ export default function PlanPage() {
           </div>
         </div>
 
-        {/* Plan steps */}
+        {/* This is the plan steps */}
         <div className="space-y-4">
           {plan.steps.map((step) => (
             <div
